@@ -6,19 +6,15 @@ export class SearchBar extends Component {
     }
 
     _handleChange = e => {
-        this.setState({inputArtist: e.target.value})
+        this.setState({inputArtist: encodeURIComponent(e.target.value)})
     }
 
     _handleSubmit = e => {
         e.preventDefault()
-        fetch(`https://api.spotify.com/v1/search?q=${this.state.inputArtist}&type=artist`, {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " +  process.env.REACT_APP_SPOTIFY_API
-        })
+        fetch(`https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${this.state.inputArtist}&api_key=${process.env.REACT_APP_API_KEY}&format=json`)
         .then(res => res.json())
         .then(res => {
-            this.props.onResults(res.artists)
+            this.props.onResults(res.artist)
         })
     }
 

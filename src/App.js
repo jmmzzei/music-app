@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Title } from './components/Title'
 import { SearchBar } from './components/SearchBar'
+import { Card } from './components/Card'
+import { SpotifyApiContext } from 'react-spotify-api'
 import 'bulma/css/bulma.css'
 import './App.css';
 
@@ -10,25 +12,31 @@ class App extends Component {
   }
 
   _handleResults = results => {
-    this.setState({ results })
+    this.setState({ results: [results] })
   }
 
   render() {
+    console.log(this.state.results)
     return (
-      <div className="App">
-        <Title>
-          Music Finder
+      <SpotifyApiContext.Provider value={process.env.REACT_APP_SPOTIFY_API}>
+        <div className="App">
+          <Title>
+            Artist Finder
       </Title>
-        <div className="SearchForm-wrapper">
-          <SearchBar onResults={this._handleResults} />
-        </div>
-        {this.state.results.length === 0
-          ? null
-          : this.state.results.map(e => (
-            <p key={e.items.id}> {e.name}: {e.popularity}</p>
-          ))
-        }
-      </div>
+          <div className="SearchForm-wrapper">
+            <SearchBar onResults={this._handleResults} />
+          </div>
+          {typeof this.state.results === 'undefined'
+            ? null
+            : this.state.results.map(e => (
+              <Card
+                key={e.mbid}
+                {...e}
+              />)
+            )
+          }
+         </div>
+      </SpotifyApiContext.Provider>
     )
   }
 }
