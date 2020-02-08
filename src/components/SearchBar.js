@@ -6,11 +6,12 @@ export class SearchBar extends Component {
     }
 
     _handleChange = e => {
-        this.setState({inputArtist: encodeURIComponent(e.target.value)})
+        this.setState({inputArtist: e.target.value})
     }
 
     _handleSubmit = e => {
         e.preventDefault()
+
         fetch(`https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${this.state.inputArtist}&api_key=${process.env.REACT_APP_API_KEY}&format=json`)
         .then(res => res.json())
         .then(res => {
@@ -24,13 +25,14 @@ export class SearchBar extends Component {
             <div className="field has-addons">
                 <div className="control">
                     <input
-                    onChange={this._handleChange} 
+                    onChange={this._handleChange}
                     className="input" 
                     type="text" 
-                    placeholder="Search for an Artist"/>
+                    placeholder="Search for an Artist"
+                    />
                 </div>
                 <div className="control">
-                    <button className="button is-info">
+                    <button className="button is-primary">
                     Search
                     </button>
                 </div>

@@ -1,38 +1,48 @@
 import React, { Component } from 'react';
-import { Title } from './components/Title'
 import { SearchBar } from './components/SearchBar'
 import { Card } from './components/Card'
 import 'bulma/css/bulma.css'
-import './App.css';
+import './App.css'
+import { Breadcrumb } from './components/Breadcumb'
+import { Hero } from './components/Hero'
+import { Container } from './components/Container'
 
 class App extends Component {
   state = {
-    results: []
+    results: {}
   }
 
   _handleResults = results => {
-    this.setState({ results: [results] })
+    this.setState({ results })
   }
 
   render() {
     console.log(this.state.results)
+
     return (
       <div className="App">
-        <Title>
-          Artist Finder
-      </Title>
-        <div className="SearchForm-wrapper">
-          <SearchBar onResults={this._handleResults} />
-        </div>
-        {typeof this.state.results === 'undefined'
-          ? null
-          : this.state.results.map(e => (
-            <Card
-              key={e.mbid}
-              {...e}
-            />)
-          )
-        }
+        <Hero>
+          <div className="SearchForm-wrapper">
+            <SearchBar
+              onResults={this._handleResults}
+            />
+          </div>
+        </Hero>
+        <Container>
+          {Object.keys(this.state.results).length === 0 && this.state.results.constructor === Object
+            ? null
+            :
+            <>
+              <Card
+                {...this.state.results}
+              />
+              <Breadcrumb
+                artists={this.state.results.similar.artist}
+                onResults={this._handleResults}
+              />
+            </>
+          }
+        </Container>
       </div>
     )
   }

@@ -8,7 +8,6 @@ export class Card extends Component {
     }
 
     render() {
-        console.log(this.props.image[2]['#text'])
         return (
             <div className="card">
                 <div className="card-image">
@@ -38,9 +37,6 @@ export class Card extends Component {
 
                     <div className="content">
                         {this.props.bio.summary}
-                        <hr />
-                        {this.props.bio.content}
-                        <time dateTime="2016-1-1">11:09 PM - 1 Jan 2016</time>
                     </div>
                 </div>
             </div>
