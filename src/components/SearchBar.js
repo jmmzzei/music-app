@@ -6,17 +6,19 @@ export class SearchBar extends Component {
     }
 
     _handleChange = e => {
-        this.setState({inputArtist: e.target.value})
+            this.setState({inputArtist: e.target.value})
     }
 
     _handleSubmit = e => {
         e.preventDefault()
-
-        fetch(`https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${this.state.inputArtist}&api_key=${process.env.REACT_APP_API_KEY}&format=json`)
-        .then(res => res.json())
-        .then(res => {
-            this.props.onResults(res.artist)
-        })
+        if (this.state.inputArtist.length !== 0) {
+            fetch(`https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${this.state.inputArtist}&api_key=${process.env.REACT_APP_API_KEY}&format=json`)
+            .then(res => res.json())
+            .then(res => {
+                this.props.onResults(res.artist)
+            })
+            this.setState({inputArtist: ''})
+        }
     }
 
     render() {
@@ -29,6 +31,7 @@ export class SearchBar extends Component {
                     className="input" 
                     type="text" 
                     placeholder="Search for an Artist"
+                    value={this.state.inputArtist}
                     />
                 </div>
                 <div className="control">
@@ -37,9 +40,6 @@ export class SearchBar extends Component {
                     </button>
                 </div>
             </div>
-                <p className="has-text-grey">
-                    {this.state.inputArtist && 'Search for: ' + this.state.inputArtist}
-                </p>
         </form>
         )
     }

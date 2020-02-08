@@ -33,6 +33,7 @@ class App extends Component {
             ? null
             :
             <>
+              <p className="title has-text-grey"> Results for: {this.state.results.name}</p>
               <Card
                 {...this.state.results}
               />
