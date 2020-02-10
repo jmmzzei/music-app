@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
 export class TopSongs extends Component {
+<<<<<<< HEAD
     state = {
         inputArtist: 'cher',
         topSongs: ''
@@ -15,6 +16,8 @@ export class TopSongs extends Component {
         })
     }
 
+=======
+>>>>>>> 6f8c3ddc268e1f393f120c9fb8f446eeff00d6e0
     render() {
         return (
             <nav className="panel">
@@ -25,6 +28,7 @@ export class TopSongs extends Component {
                     <a className="is-active">Top Songs</a>
                     <a>Top Albums</a>
                 </p>
+<<<<<<< HEAD
 
                 {
                     typeof this.state.topSongs === "string"
@@ -41,6 +45,44 @@ export class TopSongs extends Component {
                         : null
                     })
                 }
+=======
+                <a className="panel-block is-active">
+                    <span className="panel-icon">
+                        <i className="fas fa-book" aria-hidden="true"></i>
+                    </span>
+                    Song n°1
+                </a>
+                <a className="panel-block">
+                    <span className="panel-icon">
+                        <i className="fas fa-book" aria-hidden="true"></i>
+                    </span>
+                    Song n°2
+                </a>
+                <a className="panel-block">
+                    <span className="panel-icon">
+                        <i className="fas fa-book" aria-hidden="true"></i>
+                    </span>
+                    Song n°3
+                </a>
+                <a className="panel-block">
+                    <span className="panel-icon">
+                        <i className="fas fa-book" aria-hidden="true"></i>
+                    </span>
+                    Song n°4
+                </a>
+                <a className="panel-block">
+                    <span className="panel-icon">
+                        <i className="fas fa-code-branch" aria-hidden="true"></i>
+                    </span>
+                    Song n°5
+                </a>
+                <a className="panel-block">
+                    <span className="panel-icon">
+                        <i className="fas fa-code-branch" aria-hidden="true"></i>
+                    </span>
+                    Song n°6
+                </a>
+>>>>>>> 6f8c3ddc268e1f393f120c9fb8f446eeff00d6e0
             </nav>
         )
     }
