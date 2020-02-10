@@ -12,11 +12,11 @@ export class TopSongs extends Component {
             .then(res => res.json())
             .then(res => {
                 if (res.toptracks) {
-                    responseAPI = res.toptracks.track
-                    this.setState({ fetchedData: res.toptracks.track })
+                    responseAPI = res.toptracks.track.filter((e, i) => i < 5)
+                    this.setState({ fetchedData: responseAPI })
                 } else {
-                    responseAPI = res.topalbums.album
-                    this.setState({ fetchedData: res.topalbums.album })
+                    responseAPI = res.topalbums.album.filter((e, i) => i < 5)
+                    this.setState({ fetchedData: responseAPI })
                 }
             })
 
@@ -61,17 +61,14 @@ export class TopSongs extends Component {
                 {
                     typeof this.state.fetchedData === "string"
                         ? null
-                        : this.state.fetchedData.map((e, i) => {
-                            return i < 5
-                                ?
-                                <a key={e.name} className="panel-block is-active" href={`/${e.name}`}>
-                                    <span className="panel-icon">
-                                        <i className="fas fa-book" aria-hidden="true"></i>
-                                    </span>
-                                    {e.name}
-                                </a>
-                                : null
-                        })
+                        : this.state.fetchedData.map((e, i) => 
+                            <a key={e.name} className="panel-block is-active" href={`/${e.name}`}>
+                                <span className="panel-icon">
+                                    <i className="fas fa-book" aria-hidden="true"></i>
+                                </span>
+                                {e.name}
+                            </a>
+                        )
                 }
             </nav>
         )
