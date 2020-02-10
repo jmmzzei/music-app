@@ -8,25 +8,51 @@ export class TopSongs extends Component {
 
     componentDidMount() {
         let required = this.state.tab === 'songs' ? 'gettoptracks' : 'gettopalbums'
-        this._incialFetchData(required)
+        this._incialFetchData(required).then(res => 
+            sessionStorage.setItem('songsData', JSON.stringify(res)))
     }
 
     _incialFetchData = async (required) => {
+        let responseAPI = {}
         await fetch(`https://ws.audioscrobbler.com/2.0/?method=artist.${required}&artist=${this.props.artist}&api_key=${process.env.REACT_APP_API_KEY}&format=json`)
             .then(res => res.json())
             .then(res => {
-                console.log(res)
-                this.state.tab === 'songs'
-                    ? this.setState({ fetchedData: res.toptracks.track })
-                    : this.setState({ fetchedData: res.topalbums.album })
+                if (this.state.tab === 'songs') {
+                    responseAPI = res.toptracks.track
+                    this.setState({ fetchedData: res.toptracks.track })
+                } else {
+                    responseAPI = res.topalbums.album
+                    this.setState({ fetchedData: res.topalbums.album })
+                }
             })
 
-        sessionStorage.setItem('songsData', JSON.stringify(this.state.fetchedData))
+        return await new Promise((resolve, reject) => resolve(responseAPI));
+    }
+
+    _fetchData = async (required) => {
+        let responseAPI = {}
+        await fetch(`https://ws.audioscrobbler.com/2.0/?method=artist.${required}&artist=${this.props.artist}&api_key=${process.env.REACT_APP_API_KEY}&format=json`)
+        .then(res => res.json())
+        .then(res => {
+                if (this.state.tab === 'songs') {
+                    responseAPI = res.topalbums.album
+                    this.setState({ fetchedData: res.topalbums.album })
+                } else {
+                    responseAPI = res.toptracks.track
+                    this.setState({ fetchedData: res.toptracks.track })
+                }
+            })
+
+        return await new Promise((resolve, reject) => resolve(responseAPI));
     }
 
     componentWillUpdate(){
         console.log('will: '+ this.state.tab);
     }
+    componentDidUpdate(){
+        console.log('did: '+ this.state.tab);
+    }
+
 
     _handleClick = (e) => {
         console.log(e.target)
@@ -38,21 +64,11 @@ export class TopSongs extends Component {
             this.setState({ fetchedData: JSON.parse(sessionStorage.songsData) })
         } else {
             if (!sessionStorage.albumsData) {
-                (async ()=> {
-                    await fetch(`https://ws.audioscrobbler.com/2.0/?method=artist.${required}&artist=${this.props.artist}&api_key=${process.env.REACT_APP_API_KEY}&format=json`)
-                        .then(res => res.json())
-                        .then(res => {
-    
-                            this.state.tab === 'songs'
-                                ? this.setState({ fetchedData: res.topalbums.album })
-                                : this.setState({ fetchedData: res.toptracks.track })
-    
-                        })
-                        sessionStorage.setItem('albumsData', JSON.stringify(this.state.fetchedData))
-                })()
-
+                this._fetchData(required).then( res => 
+                    sessionStorage.setItem('albumsData', JSON.stringify(res))
+                )
             } else {
-                this.setState({ fetchedData: JSON.parse(sessionStorage.albumsData) })
+                this.setState({ fetchedData: JSON.parse(sessionStorage.albumsData) })                
             }
         }
     }
