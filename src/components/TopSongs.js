@@ -6,12 +6,6 @@ export class TopSongs extends Component {
         tab: 'songs'
     }
 
-    componentDidMount() {
-        let reqParam = this.state.tab === 'songs' ? 'gettoptracks' : 'gettopalbums'
-        this._fetchData(reqParam).then(res => 
-            sessionStorage.setItem('songsData', JSON.stringify(res)))
-    }
-
     _fetchData = async (reqParam) => {
         let responseAPI = {}
         await fetch(`https://ws.audioscrobbler.com/2.0/?method=artist.${reqParam}&artist=${this.props.artist}&api_key=${process.env.REACT_APP_API_KEY}&format=json`)
@@ -23,35 +17,37 @@ export class TopSongs extends Component {
                 } else {
                     responseAPI = res.topalbums.album
                     this.setState({ fetchedData: res.topalbums.album })
-                } 
+                }
             })
 
         return await new Promise((resolve, reject) => resolve(responseAPI));
     }
 
-
-    _handleClick = (e) => {
-        console.log(e.target)
-        this.setState({ tab: this.state.tab === 'songs' ? 'albums' : 'songs' })
-        let reqParam = this.state.tab === 'songs' ? 'gettoptracks' : 'gettopalbums'
-        console.log('sety: ' + this.state.tab)
-
-        if (this.state.tab === 'songs') {
+    _rePopulateState = reqParam => {
+        if (this.state.tab === 'songs')
             this.setState({ fetchedData: JSON.parse(sessionStorage.songsData) })
-        } else {
-            if (!sessionStorage.albumsData) {
-                this._fetchData(reqParam).then( res => 
-                    sessionStorage.setItem('albumsData', JSON.stringify(res))
-                )
-            } else {
-                this.setState({ fetchedData: JSON.parse(sessionStorage.albumsData) })                
-            }
+        else {
+            !sessionStorage.albumsData
+                ? this._fetchData(reqParam).then(res =>
+                    sessionStorage.setItem('albumsData', JSON.stringify(res)))
+                : this.setState({ fetchedData: JSON.parse(sessionStorage.albumsData) })
         }
     }
 
-    render() {
-        console.log('render: '+this.state.tab)
+    componentDidMount() {
+        let reqParam = this.state.tab === 'songs' ? 'gettoptracks' : 'gettopalbums'
+        this._fetchData(reqParam).then(res =>
+            sessionStorage.setItem('songsData', JSON.stringify(res)))
+    }
 
+    _handleClick = (e) => {
+        this.setState({ tab: this.state.tab === 'songs' ? 'albums' : 'songs' })
+        let reqParam = this.state.tab === 'songs' ? 'gettoptracks' : 'gettopalbums'
+
+        this._rePopulateState(reqParam)
+    }
+
+    render() {
         return (
             <nav className="panel">
                 <p className="panel-heading">
