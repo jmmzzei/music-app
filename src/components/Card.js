@@ -4,12 +4,14 @@ import PropTypes from 'prop-types'
 export class Card extends Component {
     static propTypes = {
         name: PropTypes.string,
-        year: PropTypes.string
+        year: PropTypes.string,
+        id: PropTypes.string,
     }
 
     render() {
+        console.log(this.props)
         return (
-            <div className="card">
+            <a href={`?id=${this.props.mbid}`} className="card">
                 <div className="card-image">
                     <figure className="image is-4by3">
                         <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder" />
@@ -23,7 +25,7 @@ export class Card extends Component {
                             </figure>
                         </div>
                         <div className="media-content">
-                            <a href={this.props.url} target="_blank" rel="noopener noreferrer" className="title is-3 has-text-weight-medium">{this.props.name}</a>
+                            <p target="_blank" rel="noopener noreferrer" className="title is-3 has-text-weight-medium">{this.props.name}</p>
                         </div>
                     </div>
                     <div>
@@ -39,7 +41,7 @@ export class Card extends Component {
                         {this.props.bio.summary}
                     </div>
                 </div>
-            </div>
+            </a>
         )
     }
 }
