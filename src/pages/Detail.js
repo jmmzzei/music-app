@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from "prop-types";
+import { ButtonToHome } from "../components/ButtonToHome"
 
 export class Detail extends Component {
     static propTypes = {
@@ -11,15 +12,11 @@ export class Detail extends Component {
         }),
     }
 
-    _goBack = () => [
-        window.history.back()
-    ]
-
     render() {
         return (
             <>
                 <div>Detail of {this.props.match.params.id}</div>
-                <button onClick={this._goBack}>Volver</button>
+                <ButtonToHome />
             </>
         )
     }
