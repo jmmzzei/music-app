@@ -3,7 +3,12 @@ import PropTypes from "prop-types";
 
 export class Detail extends Component {
     static propTypes = {
-        id: PropTypes.string,
+        match: PropTypes.shape({
+            params: PropTypes.object,
+            isExact: PropTypes.bool,
+            path: PropTypes.string,
+            url: PropTypes.string,
+        }),
     }
 
     _goBack = () => [
@@ -13,7 +18,7 @@ export class Detail extends Component {
     render() {
         return (
             <>
-                <div>Detail of {this.props.id}</div>
+                <div>Detail of {this.props.match.params.id}</div>
                 <button onClick={this._goBack}>Volver</button>
             </>
         )

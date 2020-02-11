@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { Link } from "react-router-dom";
+
 
 export class Card extends Component {
     static propTypes = {
@@ -11,7 +13,7 @@ export class Card extends Component {
     render() {
         console.log(this.props)
         return (
-            <a href={`?id=${this.props.mbid}`} className="card">
+            <Link to={`/detail/${this.props.mbid}`} className="card">
                 <div className="card-image">
                     <figure className="image is-4by3">
                         <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder" />
@@ -41,7 +43,7 @@ export class Card extends Component {
                         {this.props.bio.summary}
                     </div>
                 </div>
-            </a>
+            </Link>
         )
     }
 }
