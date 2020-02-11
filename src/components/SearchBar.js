@@ -2,22 +2,27 @@ import React, { Component } from 'react'
 
 export class SearchBar extends Component {
     state = {
-        inputArtist: ''
+        inputArtist: '',
+        loading: false
     }
 
     _handleChange = e => {
-            this.setState({inputArtist: e.target.value})
+        this.setState({inputArtist: e.target.value.toUpperCase()})
     }
 
-    _handleSubmit = e => {
+    _handleSubmit = async e => {
         e.preventDefault()
+
+        sessionStorage && sessionStorage.clear()
+        this.setState({loading: true})
+
         if (this.state.inputArtist.length !== 0) {
-            fetch(`https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${this.state.inputArtist}&api_key=${process.env.REACT_APP_API_KEY}&format=json`)
+            await fetch(`https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${this.state.inputArtist}&api_key=${process.env.REACT_APP_API_KEY}&format=json`)
             .then(res => res.json())
             .then(res => {
                 this.props.onResults(res.artist)
             })
-            this.setState({inputArtist: ''})
+            await this.setState({inputArtist: '', loading: false})
         }
     }
 
@@ -25,7 +30,7 @@ export class SearchBar extends Component {
         return (
             <form onSubmit={this._handleSubmit}>
             <div className="field has-addons">
-                <div className="control">
+                <div className={this.state.loading ? "control is-loading" : "control"} >
                     <input
                     onChange={this._handleChange}
                     className="input" 
@@ -35,8 +40,8 @@ export class SearchBar extends Component {
                     />
                 </div>
                 <div className="control">
-                    <button className="button is-primary">
-                    Search
+                    <button className="button is-warning">
+                        <p className="has-text-weight-bold">SEARCH</p>
                     </button>
                 </div>
             </div>
@@ -44,4 +49,3 @@ export class SearchBar extends Component {
         )
     }
 }
-            
