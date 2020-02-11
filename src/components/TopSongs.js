@@ -3,7 +3,8 @@ import React, { Component } from 'react'
 export class TopSongs extends Component {
     state = {
         fetchedData: '',
-        tab: 'songs'
+        tab: 'songs',
+        prevArtist: ''
     }
 
     _fetchData = async (reqParam) => {
@@ -23,14 +24,20 @@ export class TopSongs extends Component {
         return await new Promise((resolve, reject) => resolve(responseAPI));
     }
 
+    _sessionStoreOrFetch = (sessionStoreField, reqParam) => {
+        if (!sessionStorage[sessionStoreField]) {
+            this._fetchData(reqParam).then(res =>
+                sessionStorage.setItem(sessionStoreField, JSON.stringify(res)))
+        } else {
+            this.setState({ fetchedData: JSON.parse(sessionStorage[sessionStoreField]) })
+        }
+    }
+
     _rePopulateState = reqParam => {
-        if (this.state.tab === 'songs')
-            this.setState({ fetchedData: JSON.parse(sessionStorage.songsData) })
-        else {
-            !sessionStorage.albumsData
-                ? this._fetchData(reqParam).then(res =>
-                    sessionStorage.setItem('albumsData', JSON.stringify(res)))
-                : this.setState({ fetchedData: JSON.parse(sessionStorage.albumsData) })
+        if (this.state.tab === 'songs'){
+            this._sessionStoreOrFetch('songsData', reqParam)
+        } else {
+            this._sessionStoreOrFetch('albumsData', reqParam)
         }
     }
 
@@ -43,19 +50,20 @@ export class TopSongs extends Component {
     _handleClick = (e) => {
         this.setState({ tab: this.state.tab === 'songs' ? 'albums' : 'songs' })
         let reqParam = this.state.tab === 'songs' ? 'gettoptracks' : 'gettopalbums'
-
         this._rePopulateState(reqParam)
     }
 
     render() {
+        console.log('as');
+        
         return (
             <nav className="panel">
                 <p className="panel-heading">
-                    {this.state.tab === 'songs' ? 'Top Songs' : 'Top Albums'}
+                    {this.state.tab === 'songs' ? 'TOP SONGS' : 'TOP ALBUMS'}
                 </p>
                 <p className="panel-tabs">
                     <a onClick={this._handleClick}>
-                        {this.state.tab === 'songs' ? 'Top Albums' : 'Top Songs'}
+                        {this.state.tab === 'songs' ? 'TOP ALBUMS' : 'TOP SONGS'}
                     </a>
                 </p>
                 {
@@ -66,7 +74,7 @@ export class TopSongs extends Component {
                                 <span className="panel-icon">
                                     <i className="fas fa-book" aria-hidden="true"></i>
                                 </span>
-                                {e.name}
+                                {e.name.toUpperCase()}
                             </a>
                         )
                 }
