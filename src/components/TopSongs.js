@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 
 export class TopSongs extends Component {
     state = {
         fetchedData: '',
         tab: 'songs',
-        prevArtist: ''
+        prevArtist: '',
+        selectedItem: ''
     }
 
     _fetchData = async (reqParam) => {
@@ -15,9 +17,11 @@ export class TopSongs extends Component {
                 if (res.toptracks) {
                     responseAPI = res.toptracks.track.filter((e, i) => i < 5)
                     this.setState({ fetchedData: responseAPI })
+                    this.props.onResults({tracks: responseAPI, ...this.props})
                 } else {
                     responseAPI = res.topalbums.album.filter((e, i) => i < 5)
                     this.setState({ fetchedData: responseAPI })
+                    this.props.onResults({albums: responseAPI, ...this.props})
                 }
             })
 
@@ -54,10 +58,8 @@ export class TopSongs extends Component {
     }
 
     render() {
-        console.log('as');
-        
         return (
-            <nav className="panel">
+            <Link to={`/song/${this.selectedItem}`} className="panel">
                 <p className="panel-heading">
                     {this.state.tab === 'songs' ? 'TOP SONGS' : 'TOP ALBUMS'}
                 </p>
@@ -78,7 +80,7 @@ export class TopSongs extends Component {
                             </a>
                         )
                 }
-            </nav>
+            </Link>
         )
     }
 }
