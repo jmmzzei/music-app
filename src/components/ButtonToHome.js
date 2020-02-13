@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 export class ButtonToHome extends Component {
     render(){
         return(
-            <Link to="/" className="button is-danger">
+            <Link to="/" className="button is-warning is-radiusless">
                 TO HOME
             </Link>
         )

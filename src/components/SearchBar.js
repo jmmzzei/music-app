@@ -13,8 +13,9 @@ export class SearchBar extends Component {
     _handleSubmit = async e => {
         e.preventDefault()
         if (this.state.inputArtist) {
-            
             sessionStorage && sessionStorage.clear()
+            
+            sessionStorage.setItem('input', this.state.inputArtist)
             this.setState({loading: true})
             
             if (this.state.inputArtist.length !== 0) {
@@ -23,13 +24,12 @@ export class SearchBar extends Component {
                 .then(res => {
                     this.props.onResults(res.artist)
                 })
-                await this.setState({inputArtist: '', loading: false})
+                await this.setState({ inputArtist: '', loading: false })
             }
         }
     }
 
     render() {
-        
         return (
             <form onSubmit={this._handleSubmit}>
             <div className="field has-addons">
@@ -40,6 +40,7 @@ export class SearchBar extends Component {
                     type="text" 
                     placeholder="Search for an Artist"
                     value={this.state.inputArtist}
+                    autoFocus
                     />
                 </div>
                 <div className="control">
