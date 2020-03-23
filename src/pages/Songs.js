@@ -71,7 +71,7 @@ export class Song extends Component {
 					<List
 						title="SIMILAR TRACKS"
 						iterable={this.state.similar}
-						song
+						songList
 					/>
 				)}
 			</>

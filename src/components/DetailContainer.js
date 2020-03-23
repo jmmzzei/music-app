@@ -28,7 +28,11 @@ export class DetailContainer extends Component {
                 </div>
                 
                 <div className="column">
-                    {this.props.children}
+                    <List
+                        iterable={this.props.tracks}	
+                        title="TOP SONGS"
+                        songList
+                    />
                 </div>
             </div>
         )

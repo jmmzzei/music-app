@@ -34,7 +34,11 @@ export class Artist extends Component {
 				if (res.toptracks) {
 					responseAPI = res.toptracks.track.filter((e, i) => i < 10)
 					this.setState({ tracks: responseAPI })
+					
+					console.group()
 					console.log(this.state.tracks)
+					console.log('TRACKSSS')
+
 				} else if (res.artist) {
 					this.setState({ artist: res.artist })
 					console.log(this.state.artist)
@@ -60,8 +64,7 @@ export class Artist extends Component {
 		if (currentSearch !== previousSearch) {
 			this._fetchData("getinfo")
 			this._fetchData("getsimilar")
-			this._fetchData("getinfo")
-
+			this._fetchData("gettoptracks")
 		}
 	}
 
@@ -88,12 +91,8 @@ export class Artist extends Component {
 						img={this.state.artist.image[4]["#text"]}
 						tags={this.state.artist.tags.tag}
 						similar={this.state.artist.similar.artist}
-					>
-						<List
-							iterable={this.state.tracks}
-							title="TOP SONGS"
-						/>
-					</DetailContainer>
+						tracks={this.state.tracks}
+					/>
 				</>)
 				: null
 		)
