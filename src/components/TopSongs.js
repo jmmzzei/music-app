@@ -15,11 +15,11 @@ export class TopSongs extends Component {
             .then(res => res.json())
             .then(res => {
                 if (res.toptracks) {
-                    responseAPI = res.toptracks.track.filter((e, i) => i < 5)
+                    responseAPI = res.toptracks.track.filter((e, i) => i < this.props.quantity)
                     this.setState({ fetchedData: responseAPI })
                     this.props.onResults({tracks: responseAPI, ...this.props})
                 } else {
-                    responseAPI = res.topalbums.album.filter((e, i) => i < 5)
+                    responseAPI = res.topalbums.album.filter((e, i) => i < this.props.quantity)
                     this.setState({ fetchedData: responseAPI })
                     this.props.onResults({albums: responseAPI, ...this.props})
                 }
@@ -57,9 +57,14 @@ export class TopSongs extends Component {
         this._rePopulateState(reqParam)
     }
 
+    _handleSingleSongClick = (e) => {
+        this.props.onCallback(e)
+        console.log(e.target.innerText)
+    }
+
     render() {
         return (
-            <Link to={`/song/${this.selectedItem}`} className="panel">
+            <nav className="panel">
                 <p className="panel-heading">
                     {this.state.tab === 'songs' ? 'TOP SONGS' : 'TOP ALBUMS'}
                 </p>
@@ -70,17 +75,18 @@ export class TopSongs extends Component {
                 </p>
                 {
                     typeof this.state.fetchedData === "string"
-                        ? null
-                        : this.state.fetchedData.map((e, i) => 
-                            <a key={e.name} className="panel-block is-active" href={`/${e.name}`}>
-                                <span className="panel-icon">
-                                    <i className="fas fa-book" aria-hidden="true"></i>
-                                </span>
-                                {e.name.toUpperCase()}
-                            </a>
-                        )
+                    ? null
+                    : this.state.fetchedData.map((e, i) => 
+                        <Link 
+                        to={`/song/${e.artist.name}/${e.name}`} 
+                        key={e.mbid} 
+                        className="panel-block is-active"
+                        onClick={this._handleSingleSongClick}>
+                            {e.name.toUpperCase()}
+                        </Link>
+                    )
                 }
-            </Link>
+            </nav>
         )
     }
 }

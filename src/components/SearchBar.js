@@ -22,6 +22,7 @@ export class SearchBar extends Component {
                 await fetch(`https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${this.state.inputArtist}&api_key=${process.env.REACT_APP_API_KEY}&format=json`)
                 .then(res => res.json())
                 .then(res => {
+                    console.log(res.artist)
                     this.props.onResults(res.artist)
                 })
                 await this.setState({ inputArtist: '', loading: false })

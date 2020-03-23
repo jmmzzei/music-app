@@ -12,7 +12,7 @@ export class DetailContainer extends Component {
                         alt="artist"
                     />
                     <div className="box">
-                        <p className="title">LISTENERS: {this.props.listeners}</p>
+                        <p className="title">{this.props.listeners} LISTENERS</p>
                     </div>
                     <List 
                         iterable={this.props.similar}

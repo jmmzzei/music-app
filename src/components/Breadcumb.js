@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Title } from './Title'
+import { concatSeries } from 'async'
 
 export class Breadcrumb extends Component {
     state = {inputArtist: ''}

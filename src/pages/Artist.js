@@ -9,8 +9,8 @@ import { List } from "../components/List"
 export class Artist extends Component {
 	state = {
 		tracks: {},
-        albums: {},
-        artist: {}
+		albums: {},
+		artist: {}
 	}
 
 	static propTypes = {
@@ -26,7 +26,7 @@ export class Artist extends Component {
 		let responseAPI = {}
 		await fetch(
 			`https://ws.audioscrobbler.com/2.0/?method=artist.${reqParam}&artist=${this.props.match.params.artist.toLowerCase()}&api_key=${
-				process.env.REACT_APP_API_KEY
+			process.env.REACT_APP_API_KEY
 			}&format=json`
 		)
 			.then(res => res.json())
@@ -34,96 +34,68 @@ export class Artist extends Component {
 				if (res.toptracks) {
 					responseAPI = res.toptracks.track.filter((e, i) => i < 10)
 					this.setState({ tracks: responseAPI })
-				} else if(res.artist) {
-                    this.setState({ artist: res.artist })
-                } else if (res.topalbums){
-                	responseAPI = res.topalbums.album.filter((e, i) => i < 10)
-                	this.setState({ albums: responseAPI })
-                }
+					console.log(this.state.tracks)
+				} else if (res.artist) {
+					this.setState({ artist: res.artist })
+					console.log(this.state.artist)
+
+				} else if (res.topalbums) {
+					responseAPI = res.topalbums.album.filter((e, i) => i < 10)
+					this.setState({ albums: responseAPI })
+					console.log(this.state.albums)
+
+				}
 			})
 	}
 
 	componentDidMount() {
-        if(this.props.resultado){
-            this._fetchData("gettopalbums")
-            this._fetchData("gettoptracks")
-        }else {
-            this._fetchData("getinfo")
-            this._fetchData("gettopalbums")
-            this._fetchData("gettoptracks")
-        }
-    }
+		this._fetchData("getinfo")
+		this._fetchData("gettopalbums")
+		this._fetchData("gettoptracks")
+	}
 
-    componentDidUpdate(previousProps) {
-		console.log(this.props)
-        const currentSearch = this.props.location.pathname
-        const previousSearch = previousProps.location.pathname
-        if (currentSearch !== previousSearch) {
-             this._fetchData("getinfo")
-            this._fetchData("getsimilar")
+	componentDidUpdate(previousProps) {
+		const currentSearch = this.props.location.pathname
+		const previousSearch = previousProps.location.pathname
+		if (currentSearch !== previousSearch) {
 			this._fetchData("getinfo")
-			
-        }
-      }
+			this._fetchData("getsimilar")
+			this._fetchData("getinfo")
+
+		}
+	}
 
 	componentWillReceiveProps(nextProps) {
 		this.setState({ resultado: nextProps })
 	}
 
 	render() {
-        if (this.props.resultado) {
-        
 		return (
-			<>
-				<Navbar hasButton />
-				{Object.keys(this.props.resultado).length === 0 &&
-				this.props.resultado.constructor === Object ? null : (
-					<>
-						<Hero small>
-							<div className="SearchForm-wrapper">
-								{this.props.resultado.results.name.toUpperCase()}
-							</div>
-							<Tags
-								elements={this.props.resultado.results.tags.tag}
-							/>
-						</Hero>
-						<DetailContainer
-							bio={this.props.resultado.results.bio.content}
-							listeners={
-								this.props.resultado.results.stats.listeners
-							}
-							img={this.props.resultado.results.image[4]["#text"]}
-							tags={this.props.resultado.results.tags.tag}
-							similar={
-								this.props.resultado.results.similar.artist
-							}
-						>
-							{Object.keys(this.state.tracks).length === 0 &&
-							this.state.tracks.constructor === Object ? null : (
-								<List
-									iterable={this.state.tracks}
-                                    title="TOP SONGS"
-								/>
-							)}
-							{/* {Object.keys(this.state.albums).length === 0 &&
-							this.state.albums.constructor === Object ? null : (
-								<List
-									iterable={this.state.albums}
-									title="TOP ALBUMS"
-								/>
-							)} */}
-						</DetailContainer>
-					</>
-				)}
-			</>
-        )
-        } else {
-            return (
-                <>
-                <div>jajajaja {this.state.artist.name}</div>
-
-                </>
-            )
-        }
-    }
+			this.state.tracks.length && this.state.albums.length
+				? (<>
+					<Navbar hasButton/>
+					<Hero small>
+						<div className="SearchForm-wrapper">
+							{this.state.artist.name.toUpperCase()}
+						</div>
+						<Tags
+							elements={this.state.artist.tags.tag}
+						/>
+					</Hero>
+					<DetailContainer
+						bio={this.state.artist.bio.content}
+						listeners={this.state.artist.stats.listeners}
+						img={this.state.artist.image[4]["#text"]}
+						tags={this.state.artist.tags.tag}
+						similar={this.state.artist.similar.artist}
+					>
+						<List
+							iterable={this.state.tracks}
+							title="TOP SONGS"
+						/>
+					</DetailContainer>
+				</>)
+				: null
+		)
+	}
 }
