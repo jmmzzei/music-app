@@ -25,8 +25,9 @@ export class SearchBar extends Component {
                     console.log(res.artist)
                     if (res.error) {
                         this.props.onResults({})
+                    } else {
+                        this.props.onResults(res.artist)
                     }
-                    this.props.onResults(res.artist)
                 })
                 await this.setState({ inputArtist: '', loading: false })
             }

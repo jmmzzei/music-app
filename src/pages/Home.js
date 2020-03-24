@@ -15,8 +15,8 @@ export class Home extends Component {
   }
 
   _handleResults = results => {
-      this.setState({ results })
-      this.props.onResults(this.state)
+    this.setState({ results })
+    this.props.onResults(this.state)
   }
 
   _handleSongsAndAlbums = songsAndAlbums => {
@@ -32,52 +32,52 @@ export class Home extends Component {
   render() {
     return (
       this.state.results !== {}
-      ?( <>
-        <Navbar />
-        <Hero header="FINDER">
-          <div className="SearchForm-wrapper">
-            <SearchBar
-              onResults={this._handleResults}
-            />
-          </div>
-        </Hero>
+        ? (<>
+          <Navbar />
+          <Hero header="FINDER">
+            <div className="SearchForm-wrapper">
+              <SearchBar
+                onResults={this._handleResults}
+              />
+            </div>
+          </Hero>
 
-        {
-          Object.keys(this.state.results).length === 0 && this.state.results.constructor === Object
+          {
+            Object.keys(this.state.results).length === 0 && this.state.results.constructor === Object
+              ? null
+              :
+              <>
+                <p className="title has-text-black has-text-left"> RESULTS FOR: {this.state.results.name.toUpperCase()}</p>
+                <Container>
+                  <Card
+                    {...this.state.results}
+                  />
+
+                  <Breadcrumb
+                    artists={this.state.results.similar.artist}
+                    onResults={this._handleResults}
+                  />
+                </Container>
+              </>
+          }
+
+          {Object.keys(this.state.results).length === 0 && this.state.results.constructor === Object
             ? null
             :
             <>
-              <p className="title has-text-black has-text-left"> RESULTS FOR: {this.state.results.name.toUpperCase()}</p>
               <Container>
-                <Card
-                  {...this.state.results}
-                />
-
-                <Breadcrumb
-                  artists={this.state.results.similar.artist}
-                  onResults={this._handleResults}
+                <TopSongs
+                  quantity={5}
+                  artist={this.state.results.name}
+                  onResults={this._handleSongsAndAlbums}
+                  onCallback={this._handleSingleSong}
                 />
               </Container>
             </>
-        }
+          }
 
-        {Object.keys(this.state.results).length === 0 && this.state.results.constructor === Object
-          ? null
-          :
-          <>
-            <Container>
-              <TopSongs
-                quantity={5}
-                artist={this.state.results.name}
-                onResults={this._handleSongsAndAlbums}
-                onCallback={this._handleSingleSong}
-              />
-            </Container>
-          </>
-        }
-
-      </>)
-      : (<div>The artist you asked for could not be found</div>)
+        </>)
+        : (<div>The artist you asked for could not be found.</div>)
     )
   }
 }

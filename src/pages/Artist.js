@@ -4,6 +4,7 @@ import { Hero } from "../components/Hero"
 import { DetailContainer } from "../components/DetailContainer"
 import { Navbar } from "../components/Navbar"
 import { Tags } from "../components/Tags"
+import { Loading } from '../components/Loading'
 
 export class Artist extends Component {
 	state = {
@@ -47,7 +48,6 @@ export class Artist extends Component {
 					console.log(this.state.albums)
 
 				} else if (res.error) {
-					
 					this.setState({ success: false })
 				}
 			})
@@ -69,11 +69,12 @@ export class Artist extends Component {
 
 	render() {
 		return (
-			this.state.success
+			<>
+			<Navbar hasButton />
+			{this.state.success
 				?
 				this.state.tracks.length && this.state.artist.name
 					? (<>
-						<Navbar hasButton />
 						<Hero small>
 							<div className="SearchForm-wrapper">
 								{this.state.artist.name.toUpperCase()}
@@ -91,8 +92,11 @@ export class Artist extends Component {
 							tracks={this.state.tracks}
 						/>
 					</>)
-					: (<div>Loading...</div>)
-				: (<div>The artist you supplied could not be found</div>)
+					: (<Loading/>)
+				
+					: (<p className="is-size-3">The artist you supplied could not be found.</p>)
+					}
+					</>
 		)
 	}
 }

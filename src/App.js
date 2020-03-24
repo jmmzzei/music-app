@@ -20,8 +20,7 @@ class App extends Component {
 
 	_handleResults = results => {
 		console.log(results)
-
-		this.setState({ artistName: results.results.name })
+this.setState({ artistName: results.results.name })
 		this.setState({ resultado: results })
 		console.log(this.state.artistName)
 	}
@@ -51,20 +50,10 @@ class App extends Component {
 							/>
 						)}
 					/>
-          {/* <Artist {...this.state} /> */}
-          <Route
+					<Route
 						path="/artist/:artist"
 						component={Artist} />
-					{/* <Route
-						path="/song/:artist/:song"
-						render={router => (
-							<Song
-								router={router}
-								onCallback={this._handleCallback}
-							/>
-						)}
-					/> */}
-         			<Route
+					<Route
 						path="/song/:artist/:song"
 						component={Song}
 					/>
