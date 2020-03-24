@@ -23,6 +23,9 @@ export class SearchBar extends Component {
                 .then(res => res.json())
                 .then(res => {
                     console.log(res.artist)
+                    if (res.error) {
+                        this.props.onResults({})
+                    }
                     this.props.onResults(res.artist)
                 })
                 await this.setState({ inputArtist: '', loading: false })

@@ -11,12 +11,12 @@ export class Home extends Component {
   state = {
     results: {},
     songsAndAlbums: {},
-    singleSong: ''
+    singleSong: '',
   }
 
   _handleResults = results => {
-    this.setState({ results })
-    this.props.onResults(this.state)
+      this.setState({ results })
+      this.props.onResults(this.state)
   }
 
   _handleSongsAndAlbums = songsAndAlbums => {
@@ -31,7 +31,8 @@ export class Home extends Component {
 
   render() {
     return (
-      <>
+      this.state.results !== {}
+      ?( <>
         <Navbar />
         <Hero header="FINDER">
           <div className="SearchForm-wrapper">
@@ -75,7 +76,8 @@ export class Home extends Component {
           </>
         }
 
-      </>
+      </>)
+      : (<div>The artist you asked for could not be found</div>)
     )
   }
 }
