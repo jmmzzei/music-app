@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { Breadcrumb } from "../containers/Breadcumb"
+import { Breadcrumb } from "../components/Breadcumb"
 import { Hero } from "../components/Hero"
 import { Container } from "../components/Container"
 import { TopSongs } from "../containers/TopSongs"
