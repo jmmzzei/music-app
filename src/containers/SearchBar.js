@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import { SearchBarStyled } from "../components/SearchBarStyled"
+import {fetchArtistData} from '../helpers/fetchArtistData'
 
 export class SearchBar extends Component {
   state = {
@@ -20,19 +21,13 @@ export class SearchBar extends Component {
       this.setState({ loading: true })
 
       if (this.state.inputArtist.length !== 0) {
-        await fetch(
-          `https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${this.state.inputArtist}&api_key=${process.env.REACT_APP_API_KEY}&format=json`,
-        )
-          .then(res => res.json())
-          .then(res => {
-            console.log(res.artist)
-            if (res.error) {
-              this.props.onResults({})
-            } else {
-              this.props.onResults(res.artist)
-            }
-          })
-        await this.setState({ inputArtist: "", loading: false })
+        let response = await fetchArtistData("getinfo", this.state.inputArtist)  
+        if(response.success) {
+          this.props.onResults(response.artist)
+        } else {
+          this.props.onResults({})
+        }
+        this.setState({ inputArtist: "", loading: false })
       }
     }
   }
