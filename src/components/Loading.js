@@ -1,9 +1,7 @@
-import React, { Component } from 'react'
+import React, { Component } from "react"
 
 export class Loading extends Component {
-    render() {
-        return (
-            <div className="loading"></div>
-        )
-    }
+  render() {
+    return <section className="loading"></section>
+  }
 }
