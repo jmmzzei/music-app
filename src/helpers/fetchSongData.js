@@ -5,8 +5,14 @@ export const fetchSongData = async (reqParam, artistParam, songParam) => {
   )
     .then(res => res.json())
     .then(res => {
-      if (res.track) state.info = res.track
-      else state.similar = res.similartracks.track.filter((e, i) => i < 10)
+      if (typeof res != "object") {
+        state.info = {}
+        state.similar = {}
+      } else if (res.track) {
+        state.info = res.track
+      } else {
+        state.similar = res.similartracks.track.filter((e, i) => i < 10)
+      }
     })
   return state
 }

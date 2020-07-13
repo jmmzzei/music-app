@@ -16,7 +16,7 @@ export class Level extends Component {
           <section className="level-item has-text-centered">
             <div>
               <p className="heading">ALBUM</p>
-              <p className="title">{this.props.album}</p>
+              <p className="title">{typeof this.props.album != "string" ? 'NO ALBUM' : this.props.album}</p>
             </div>
           </section>
           <section className="level-item has-text-centered">

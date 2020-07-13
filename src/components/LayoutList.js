@@ -6,7 +6,9 @@ export class LayoutList extends Component {
     return (
       <main className="columns">
         <section className="column is-half is-offset-one-quarter">
-          <List title="SIMILAR TRACKS" iterable={this.props.similar} songList />
+          {this.props.none
+             ? <h1 className="title has-text-centered has-text-grey ">NO SIMILAR SONGS AVAILABLES</h1>
+            : <List title="SIMILAR TRACKS" iterable={this.props.similar} songList />}
         </section>
       </main>
     )

@@ -16,9 +16,9 @@ export class Song extends Component {
   getData = async reqParam => {
     let artistParam = this.props.match.params.artist.toLowerCase()
     let songParam = this.props.match.params.song.toLowerCase()
-
     let response = await fetchSongData(reqParam, artistParam, songParam)
-    if (reqParam === "getinfo") this.setState({ info: response.info })
+    if (typeof response == undefined) {
+    } else if (reqParam === "getinfo") this.setState({ info: response.info })
     else if (reqParam === "getsimilar")
       this.setState({ similar: response.similar })
   }
@@ -45,16 +45,20 @@ export class Song extends Component {
     return (
       <>
         <Navbar hasButton />
-        {this.isObjectEmpty(this.state.info) ? null : (
+        {this.isObjectEmpty(this.state.info)
+         ? null
+         : (
           <Level
             info={this.state.info.name}
             artist={this.state.info.artist.name}
-            album={this.state.info.album.title}
+            album={this.state.info.album && this.state.info.album.title}
             duration={this.state.info.duration}
             listeners={this.state.info.listeners}
           />
         )}
-        {this.isObjectEmpty(this.state.similar) ? null : (
+        {this.isObjectEmpty(this.state.similar)
+        ? <LayoutList none />
+        : (
           <LayoutList similar={this.state.similar} />
         )}
       </>
