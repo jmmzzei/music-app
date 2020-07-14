@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import { Navbar } from "../components/Navbar"
 import { Level } from "../components/Level"
+import { Loading } from "../components/Loading"
 import { fetchSongData } from "../helpers/fetchSongData"
 import { LayoutList } from "../components/LayoutList"
 
@@ -10,6 +11,7 @@ export class Song extends Component {
     this.state = {
       info: {},
       similar: {},
+      loading: true,
     }
   }
 
@@ -17,6 +19,7 @@ export class Song extends Component {
     let artistParam = this.props.match.params.artist.toLowerCase()
     let songParam = this.props.match.params.song.toLowerCase()
     let response = await fetchSongData(reqParam, artistParam, songParam)
+    this.setState({loading: false})
     if (typeof response == undefined) {
     } else if (reqParam === "getinfo") this.setState({ info: response.info })
     else if (reqParam === "getsimilar")
@@ -37,9 +40,8 @@ export class Song extends Component {
     this.getData("getinfo")
   }
 
-  isObjectEmpty = obj => {
-    return Object.keys(obj).length === 0
-  }
+  isObjectEmpty = obj => (
+    Object.keys(obj).length === 0)
 
   render() {
     return (
@@ -57,7 +59,7 @@ export class Song extends Component {
           />
         )}
         {this.isObjectEmpty(this.state.similar)
-        ? <LayoutList none />
+        ? <Loading/>
         : (
           <LayoutList similar={this.state.similar} />
         )}

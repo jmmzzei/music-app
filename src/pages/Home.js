@@ -20,11 +20,6 @@ export class Home extends Component {
     this.props.onResults(this.state)
   }
 
-  _handleSongsAndAlbums = songsAndAlbums => {
-    this.setState({ songsAndAlbums })
-    this.props.onResults(this.state, { otro: songsAndAlbums })
-  }
-
   _handleSingleSong = song => {
     this.setState({ singleSong: song })
     this.props.onCallback(song)
@@ -56,7 +51,6 @@ export class Home extends Component {
               <TopSongs
                 quantity={5}
                 artist={this.state.results.name}
-                onResults={this._handleSongsAndAlbums}
                 onCallback={this._handleSingleSong}
               />
             </Container>
