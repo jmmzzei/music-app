@@ -1,59 +1,95 @@
-import React, { Component } from "react"
-import { fetchArtistData } from "../helpers/fetchArtistData"
+import React, {Component} from 'react'
+import {fetchArtistData} from '../helpers/fetchArtistData'
 import {TopSongsStyled} from '../components/TopSongsStyled'
 
 export class TopSongs extends Component {
   state = {
-    tracks:"",
-    prevArtist: "",
-    selectedItem: "",
-    success: true
+    artist: '',
+    tracks: [{name:''}],
+    success: true,
   }
- 
-  getData = async data => {
+
+  getTopTracks = async () => {
     let urlParam = this.props.artist.toLowerCase()
-    let response = await fetchArtistData(data, urlParam, 5)
+    let response = await fetchArtistData('gettoptracks', urlParam, 5)
     if (response.success) {
-        this.setState({ tracks: response.tracks })
-        this.props.onResults({ albums: response.tracks, ...this.props })
+      console.log(response.tracks)
+      this.setState({tracks: response.tracks})
+      console.log(this.state.tracks);
       return await new Promise((resolve, reject) => resolve(response.tracks))
     }
   }
 
-  isInSessionStorage = sessionStoraField =>
-    sessionStorage[sessionStoraField] ? true : false
+  isInsessionStorage = () => {
+    let artistData = sessionStorage.getItem('artistData')
+      ? JSON.parse(sessionStorage.getItem('artistData'))
+      : {}
 
-  _sessionStoreOrFetch = (sessionStoreField, reqParam) => {
-    this.isInSessionStorage(sessionStoreField)
-      ?  this.setState({
-          fetchedData: JSON.parse(sessionStorage[sessionStoreField]),
+    if (!artistData[this.props.artist]) return false
+     else return artistData[this.props.artist] ? true : false
+  }
+
+  findAndAddTosessionStorage = tracks => {
+    let artistData = JSON.parse(sessionStorage.getItem('artistData'))
+
+    let artist = {}
+    artist[this.props.artist] = {
+      ...artistData[this.props.artist],
+      topSongs: tracks,
+    }
+    let result = Object.assign({}, artistData, artist)
+
+    sessionStorage.setItem('artistData', JSON.stringify(result))
+  }
+
+  sessionStoreOrFetch = () => {
+    // if (this.isInsessionStorage()) {
+    //   console.log('is in session storage')
+    //   let artistData = JSON.parse(sessionStorage.getItem('artistData'))
+    //   console.log(artistData[this.props.artist].topSongs)
+    //   this.setState({
+    //     tracks: artistData[this.props.artist].topSongs,
+    //   })
+    // } else {
+      console.log('is not, so add it')
+      this.getTopTracks().then(tracks => {
+        this.findAndAddTosessionStorage(tracks)
       })
-      :  this.getData(reqParam).then(res =>
-            sessionStorage.setItem(sessionStoreField, JSON.stringify(res.songs)),
-        )
+    // }
+  }
+
+  shouldComponentUpdate(nextProps, nextState){
+    if(nextProps.artist == this.props.artist){
+      if(nextState.tracks[0].name != this.state.tracks[0].name){
+        this.setState({tracks: nextState.tracks})
+        return true
+      } else return false
+    } else {
+      if(nextState.tracks[0].name != this.state.tracks[0].name){
+        this.setState({tracks: nextState.tracks})
+        return true
+      } else return true
+    }
+  }
+
+  componentDidUpdate() {
+    this.sessionStoreOrFetch()
   }
 
   componentDidMount() {
-    this.getData("gettoptracks" ).then(res =>
-      sessionStorage.setItem("songsData", JSON.stringify(res.tracks)),
-    )
+    this.sessionStoreOrFetch()
   }
 
-  _handleClick = e => {
-    this._sessionStoreOrFetch("songsData", "gettoptracks")
-  }
-
-  _handleSingleSongClick = e => {
+  handleSingleSongClic = e => {
     this.props.onCallback(e)
   }
 
   render() {
     return (
-      <TopSongsStyled 
-        handleClick={this._handleClick}
-        tracks={this.state.tracks} 
-        handleSingleSongClick={this._handleSingleSongClick}
-      /> 
+      <TopSongsStyled
+        tracks={this.state.tracks}
+        handleSingleSongClick={this.handleSingleSongClick}
+      />
     )
   }
 }

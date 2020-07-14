@@ -8,9 +8,9 @@ export class TopSongsStyled extends Component{
         <p className="panel-heading">
           TOP SONGS
         </p>
-        {typeof this.props.tracks === "string"
+        {this.props.tracks.length <= 1
           ? null
-          : this.props.tracks.map((e, i) => 
+          : this.props.tracks.map((e, i) =>
             {
               return (
                 <Link
