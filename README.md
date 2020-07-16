@@ -5,4 +5,4 @@
 Web app for searching artist information, including her/his biography, top songs, top albums, related artists, among others.
 Made with React classes, following the presentational and container components pattern. The app makes use of the Last.fm API, React-Router for client-side routing and Bulma for styling. Hosted in Netlify.
 
-Visit: https://artist-finder-app.netlify.app/
+https://artist-finder-app.netlify.app/
