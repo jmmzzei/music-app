@@ -6,15 +6,14 @@ import { Tags } from '../components/Tags'
 export class Card extends Component {
     static propTypes = {
         name: PropTypes.string,
-        year: PropTypes.string,
-        id: PropTypes.string,
     }
 
     render() {
         return (
-            <Link 
+            <Link
             to={`/artist/${this.props.name}`} 
             className="card" 
+            
             >
                 <div className="card card-content">
                     <div className="media">

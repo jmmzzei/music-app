@@ -53,8 +53,9 @@ class App extends Component {
 					/>
 					<Route
 						path="/artist/:artist"
-						render={router => (
-							<Artist router={router} {...this.state} />
+						render={() => (
+              			<Artist {...this.state} />
+							// <Artist router={router}/>
 						)}
 					/>
 					{/* <Route
@@ -66,7 +67,7 @@ class App extends Component {
 							/>
 						)}
 					/> */}
-          <Route
+         			<Route
 						path="/song/:artist/:song"
 						component={Song}
 					/>
