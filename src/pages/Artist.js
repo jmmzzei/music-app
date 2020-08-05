@@ -4,128 +4,76 @@ import { Hero } from "../components/Hero"
 import { DetailContainer } from "../components/DetailContainer"
 import { Navbar } from "../components/Navbar"
 import { Tags } from "../components/Tags"
-import { List } from "../components/List"
+import { Loading } from "../components/Loading"
+import { fetchArtistData } from "../helpers/fetchArtistData"
+import { MessageNotFound } from "../components/MessageNotFound"
 
 export class Artist extends Component {
-	state = {
-		tracks: {},
-        albums: {},
-        artist: {}
-	}
+  state = {
+    tracks: {},
+    albums: {},
+    artist: {},
+    success: true,
+  }
 
-	static propTypes = {
-		match: PropTypes.shape({
-			params: PropTypes.object,
-			isExact: PropTypes.bool,
-			path: PropTypes.string,
-			url: PropTypes.string
-		})
-	}
+  static propTypes = {
+    match: PropTypes.shape({
+      params: PropTypes.object,
+      isExact: PropTypes.bool,
+      path: PropTypes.string,
+      url: PropTypes.string,
+    }),
+  }
 
-	_fetchData = async reqParam => {
-		let responseAPI = {}
-		await fetch(
-			`https://ws.audioscrobbler.com/2.0/?method=artist.${reqParam}&artist=${this.props.router.match.params.artist.toLowerCase()}&api_key=${
-				process.env.REACT_APP_API_KEY
-			}&format=json`
-		)
-			.then(res => res.json())
-			.then(res => {
-				if (res.toptracks) {
-					responseAPI = res.toptracks.track.filter((e, i) => i < 10)
-					this.setState({ tracks: responseAPI })
-				} else if(res.artist) {
-                    this.setState({ artist: res.artist })
-                    console.log(this.state.artist.name)
-                } else if (res.topalbums){
-                	responseAPI = res.topalbums.album.filter((e, i) => i < 10)
-                	this.setState({ albums: responseAPI })
-                }
-			})
-	}
-
-	componentDidMount() {
-        if(this.props.resultado){
-            this._fetchData("gettopalbums")
-            this._fetchData("gettoptracks")
-        }else {
-            console.log(this.props.resultado)
-            this._fetchData("getinfo")
-            this._fetchData("gettopalbums")
-            this._fetchData("gettoptracks")
-        }
+  getData = async data => {
+    let urlParam = this.props.match.params.artist.toLowerCase()
+    let response = await fetchArtistData(data, urlParam)
+    if (response.success) {
+      if (data === "gettoptracks") this.setState({ tracks: response.tracks })
+      else if (data === "getinfo") this.setState({ artist: response.artist })
     }
+  }
 
-    componentDidUpdate(previousProps) {
-        const currentSearch = this.props.router.location.pathname
-        const previousSearch = previousProps.router.location.pathname
-		console.log('si');
-        if (currentSearch !== previousSearch) {
-            // this._fetchData("getinfo")
-            // this._fetchData("getsimilar")
-			// this._fetchData("getinfo")
-			
-        }
-      }
+  componentDidMount() {
+    this.getData("gettoptracks")
+    this.getData("getinfo")
+  }
 
-	componentWillReceiveProps(nextProps) {
-		this.setState({ resultado: nextProps })
-	}
-
-	render() {
-        if (this.props.resultado) {
-        
-		return (
-			<>
-				<Navbar hasButton />
-				{Object.keys(this.props.resultado).length === 0 &&
-				this.props.resultado.constructor === Object ? null : (
-					<>
-						<Hero small>
-							<div className="SearchForm-wrapper">
-								{this.props.resultado.results.name.toUpperCase()}
-							</div>
-							<Tags
-								elements={this.props.resultado.results.tags.tag}
-							/>
-						</Hero>
-						<DetailContainer
-							bio={this.props.resultado.results.bio.content}
-							listeners={
-								this.props.resultado.results.stats.listeners
-							}
-							img={this.props.resultado.results.image[4]["#text"]}
-							tags={this.props.resultado.results.tags.tag}
-							similar={
-								this.props.resultado.results.similar.artist
-							}
-						>
-							{Object.keys(this.state.tracks).length === 0 &&
-							this.state.tracks.constructor === Object ? null : (
-								<List
-									iterable={this.state.tracks}
-                                    title="TOP SONGS"
-								/>
-							)}
-							{/* {Object.keys(this.state.albums).length === 0 &&
-							this.state.albums.constructor === Object ? null : (
-								<List
-									iterable={this.state.albums}
-									title="TOP ALBUMS"
-								/>
-							)} */}
-						</DetailContainer>
-					</>
-				)}
-			</>
-        )
-        } else {
-            return (
-                <>
-                <div>jajajaja {this.state.artist.name}</div>
-
-                </>
-            )
-        }
+  componentDidUpdate(previousProps) {
+    const currentSearch = this.props.location.pathname
+    const previousSearch = previousProps.location.pathname
+    if (currentSearch !== previousSearch) {
+      this.getData("gettoptracks")
+      this.getData("getinfo")
     }
+  }
+
+  render() {
+    return (
+      <>
+        <Navbar hasButton />
+        {this.state.success ? (
+          this.state.tracks.length && this.state.artist.name ? (
+            <>
+              <Hero small artist={this.state.artist.name.toUpperCase()}>
+                <Tags elements={this.state.artist.tags.tag} />
+              </Hero>
+              <DetailContainer
+                bio={this.state.artist.bio.content}
+                listeners={this.state.artist.stats.listeners}
+                img={this.state.artist.image[4]["#text"]}
+                tags={this.state.artist.tags.tag}
+                similar={this.state.artist.similar.artist}
+                tracks={this.state.tracks}
+              />
+            </>
+          ) : (
+            <Loading />
+          )
+        ) : (
+          <MessageNotFound />
+        )}
+      </>
+    )
+  }
 }

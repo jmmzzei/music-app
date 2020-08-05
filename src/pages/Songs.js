@@ -1,80 +1,69 @@
 import React, { Component } from "react"
 import { Navbar } from "../components/Navbar"
-import { List } from "../components/List"
 import { Level } from "../components/Level"
+import { Loading } from "../components/Loading"
+import { fetchSongData } from "../helpers/fetchSongData"
+import { LayoutList } from "../components/LayoutList"
 
 export class Song extends Component {
-	constructor(props) {
-		super(props)
-		this.state = {
-			info: {},
-			similar: {}
-		}
-	}
+  constructor(props) {
+    super(props)
+    this.state = {
+      info: {},
+      similar: {},
+      loading: true,
+    }
+  }
 
-	_fetchData = async reqParam => {
-		let responseAPI = {}
-		await fetch(
-			`https://ws.audioscrobbler.com/2.0/?method=track.${reqParam}&artist=${this.props.match.params.artist.toLowerCase()}&track=${this.props.match.params.song.toLowerCase()}&api_key=${
-				process.env.REACT_APP_API_KEY
-			}&format=json`
-		)
-			.then(res => res.json())
-			.then(res => {
-				if (res.track) {
-					this.setState({ info: res.track })
-					console.log(this.state.info)
-					// this.props.onCallback(this.props.artist)
-				} else {
-					responseAPI = res.similartracks.track.filter(
-						(e, i) => i < 10
-					)
-					this.setState({ similar: responseAPI })
-					console.log(this.state.similar)
-					// this.props.onCallback(this.props.artist)
-				}
-			})
-	}
+  getData = async reqParam => {
+    let artistParam = this.props.match.params.artist.toLowerCase()
+    let songParam = this.props.match.params.song.toLowerCase()
+    let response = await fetchSongData(reqParam, artistParam, songParam)
+    this.setState({loading: false})
+    if (typeof response == undefined) {
+    } else if (reqParam === "getinfo") this.setState({ info: response.info })
+    else if (reqParam === "getsimilar")
+      this.setState({ similar: response.similar })
+  }
 
-    componentDidUpdate(previousProps) {
-        const currentSearch = this.props.location.pathname
-        const previousSearch = previousProps.location.pathname
-        if (currentSearch !== previousSearch) {
-            this._fetchData("getsimilar")
-            this._fetchData("getinfo")
-        }
-      }
+  componentDidUpdate(previousProps) {
+    const currentSearch = this.props.location.pathname
+    const previousSearch = previousProps.location.pathname
+    if (currentSearch !== previousSearch) {
+      this.getData("getsimilar")
+      this.getData("getinfo")
+    }
+  }
 
-	componentDidMount() {
-		this._fetchData("getsimilar")
-		this._fetchData("getinfo")
-	}
+  componentDidMount() {
+    this.getData("getsimilar")
+    this.getData("getinfo")
+  }
 
-	render() {
-		return (
-			<>
-				<Navbar hasButton />
-				{Object.keys(this.state.similar).length === 0 &&
-				this.state.similar.constructor === Object ? null : (
-					<div>
-						<h1 className="title">{this.state.info.name}</h1>
-						<Level
-							artist={this.state.info.artist.name}
-							album={this.state.info.album.title}
-							duration={this.state.info.duration}
-							listeners={this.state.info.listeners}
-						/>
-					</div>
-				)}
-				{Object.keys(this.state.similar).length === 0 &&
-				this.state.similar.constructor === Object ? null : (
-					<List
-						title="SIMILAR TRACKS"
-						iterable={this.state.similar}
-						song
-					/>
-				)}
-			</>
-		)
-	}
+  isObjectEmpty = obj => (
+    Object.keys(obj).length === 0)
+
+  render() {
+    return (
+      <>
+        <Navbar hasButton />
+        {this.isObjectEmpty(this.state.info)
+         ? null
+         : (
+          <Level
+            info={this.state.info.name}
+            artist={this.state.info.artist.name}
+            album={this.state.info.album && this.state.info.album.title}
+            duration={this.state.info.duration}
+            listeners={this.state.info.listeners}
+          />
+        )}
+        {this.isObjectEmpty(this.state.similar)
+        ? <Loading/>
+        : (
+          <LayoutList similar={this.state.similar} />
+        )}
+      </>
+    )
+  }
 }

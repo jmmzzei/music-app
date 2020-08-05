@@ -1,9 +1,7 @@
-import React, {Component} from 'react'
+import React, { Component } from "react"
 
 export class Title extends Component {
-    render(){
-        return(
-        <div className="title">{this.props.children}</div>
-        )
-    }
+  render() {
+    return <section className="title">{this.props.children}</section>
+  }
 }
