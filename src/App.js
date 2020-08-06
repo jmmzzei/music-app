@@ -26,6 +26,16 @@ class App extends Component {
     this.setState({ song: song })
   }
 
+  componentDidMount(){
+    fetch('/.netlify/functions/fetch')
+      .then(res => {
+      console.log(res)
+        return res.json()
+      }).then(data => {
+      console.log(data)
+      })
+  }
+
   render() {
     return (
       <Router basename="/music-app">
