@@ -22,7 +22,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start": "react-scripts start",
-    "build": "run-p build:**",
+    "build": "npm run build:lambda && npm run build:app",
     "build:app": "react-scripts build",
     "build:lambda": "netlify-lambda build src/functions"
   },
