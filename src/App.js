@@ -27,10 +27,10 @@ class App extends Component {
   }
 
   componentDidMount(){
-    fetch('/.netlify/functions/fetch')
+    fetch('/.netlify/functions/test')
       .then(res => {
       console.log(res)
-        return res.text()
+        return res.json()
       }).then(data => {
       console.log(data)
       })
