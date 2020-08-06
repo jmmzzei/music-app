@@ -30,7 +30,7 @@ class App extends Component {
     fetch('/.netlify/functions/fetch')
       .then(res => {
       console.log(res)
-        return res.json()
+        return res.text()
       }).then(data => {
       console.log(data)
       })

@@ -10,7 +10,6 @@
 
 # production
 /build
-netlify.toml
 
 # misc
 .env
